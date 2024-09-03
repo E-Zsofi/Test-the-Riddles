@@ -5,7 +5,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
-import java.time.Duration;
 
 public class Main {
     public static void main(String[] args) {
@@ -29,5 +28,7 @@ public class Main {
 
         SignUp.Signup(driver, username, password, email);
 
+        LogIn log = new LogIn();
+        log.logIn(driver, username,password);
     }
 }
