@@ -4,11 +4,11 @@ import io.github.cdimascio.dotenv.Dotenv;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.logging.LocalLogs;
 
 public class Main {
     public static void main(String[] args) {
-        WebDriver driver = new FirefoxDriver();
+        //WebDriver driver = new FirefoxDriver();
+        WebDriver driver = new ChromeDriver();
         driver.get("http://localhost:3000");
 
         Dotenv dotenv = Dotenv.load();
