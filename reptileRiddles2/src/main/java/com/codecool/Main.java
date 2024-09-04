@@ -22,9 +22,9 @@ public class Main {
                 .directory("src/main/resources")
                 .load();
 
-        String username = dotenv.get("USER1NAME");
-        String password = dotenv.get("PASSWORD");
-        String email = dotenv.get("EMAIL");
+        String username = dotenv.get("PLAYER_USERNAME");
+        String password = dotenv.get("PLAYER_PASSWORD");
+        String email = dotenv.get("PLAYER_EMAIL");
 
         SignUp.Signup(driver, username, password, email);
 
