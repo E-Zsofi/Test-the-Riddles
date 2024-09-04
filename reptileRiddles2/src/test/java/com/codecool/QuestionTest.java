@@ -117,4 +117,28 @@ class QuestionTest {
         Thread.sleep(2000);
         assertFalse(driver.getCurrentUrl().contains("http://localhost:3000/quiz/all"));
     }
+
+    @Test
+    void setTimerToZero() throws InterruptedException {
+        WebElement myQuizzes = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[contains(text(), 'My Quizzes')]")));
+        myQuizzes.click();
+        WebElement editButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"root\"]/div/div[2]/div/div[1]/div[2]/button[2]")));
+        editButton.click();
+        WebElement questionButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"root\"]/div/div[2]/div/div[1]/div/button")));
+        questionButton.click();
+        WebElement timerInput = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"2time\"]")));
+        timerInput.click();
+        timerInput.clear();
+        timerInput.sendKeys("0");
+        WebElement saveButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"root\"]/div/div[2]/div/div[2]/div[2]/div/div[4]/button[1]")));
+        saveButton.click();
+        Alert alert1 = wait.until(ExpectedConditions.alertIsPresent());
+        alert1.accept();
+        WebElement saveQuiz = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"root\"]/div/div[2]/div/div[2]/button[1]")));
+        saveQuiz.click();
+        Alert alert2 = wait.until(ExpectedConditions.alertIsPresent());
+        alert2.accept();
+        Thread.sleep(2000);
+        assertFalse(driver.getCurrentUrl().contains("http://localhost:3000/quiz/all"));
+    }
 }
