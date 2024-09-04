@@ -1,4 +1,5 @@
-import com.codecool.LogIn;
+package com.codecool;
+
 import io.github.cdimascio.dotenv.Dotenv;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
