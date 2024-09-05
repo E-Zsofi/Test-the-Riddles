@@ -35,25 +35,25 @@ class CloneQuizTest {
                 .directory("src/main/resources")
                 .load();
         driver.get("http://localhost:3000");
-        String username = dotenv.get("PLAYER2_USERNAME");
-        String password = dotenv.get("PLAYER2_PASSWORD");
+        String username = dotenv.get("PLAYER");
+        String password = dotenv.get("PLAYER_PASSWORD");
         LogIn log = new LogIn();
         log.logIn(driver, username, password);
     }
 
-    @Test
-    public void deleteAllQuiz() throws InterruptedException {
-        WebElement myQuizzes = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[contains(text(), 'My Quizzes')]")));
-        myQuizzes.click();
-        Thread.sleep(500);
-        int count = driver.findElements(By.xpath("//*[contains(text(), 'Delete')]")).size();
-        List<WebElement> Deletes = wait.until(ExpectedConditions.numberOfElementsToBe(By.xpath("//*[contains(text(), 'Delete')]"), count));
-        for (WebElement delete : Deletes) {
-            delete.click();
-            Alert alert = wait.until(ExpectedConditions.alertIsPresent());
-            alert.accept();
-        }
-    }
+//    @Test
+//    public void deleteAllQuiz() throws InterruptedException {
+//        WebElement myQuizzes = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[contains(text(), 'My Quizzes')]")));
+//        myQuizzes.click();
+//        Thread.sleep(500);
+//        int count = driver.findElements(By.xpath("//*[contains(text(), 'Delete')]")).size();
+//        List<WebElement> Deletes = wait.until(ExpectedConditions.numberOfElementsToBe(By.xpath("//*[contains(text(), 'Delete')]"), count));
+//        for (WebElement delete : Deletes) {
+//            delete.click();
+//            Alert alert = wait.until(ExpectedConditions.alertIsPresent());
+//            alert.accept();
+//        }
+//    }
 
     @Test
     public void cloneAnotherQuizMastersQuiz() throws InterruptedException {

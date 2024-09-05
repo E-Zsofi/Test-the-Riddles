@@ -15,6 +15,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.function.BooleanSupplier;
 
 public class QuizTests {
     private WebDriver driver;
@@ -81,14 +82,20 @@ public class QuizTests {
     }
 
     @Test
-    public void deleteQuizTest() {
+    public void deleteQuizTest() throws InterruptedException {
 
         WebElement myQuizzes = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[contains(text(), 'My Quizzes')]")));
         myQuizzes.click();
+        int beforeDelete = driver.findElements(By.xpath("//*[contains(text(), 'Delete')]")).size();
         WebElement deleteQuiz = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[contains(text(), 'Delete')]")));
         deleteQuiz.click();
         Alert alert = wait.until(ExpectedConditions.alertIsPresent());
         alert.accept();
+        Thread.sleep(1000);
+        int afterDelete = driver.findElements(By.xpath("//*[contains(text(), 'Delete')]")).size();
+        System.out.println(beforeDelete);
+        System.out.println(afterDelete);
+        Assertions.assertEquals(beforeDelete-1, afterDelete);
     }
 
     @Test
@@ -103,6 +110,9 @@ public class QuizTests {
             Alert alert = wait.until(ExpectedConditions.alertIsPresent());
             alert.accept();
         }
+        Thread.sleep(1000);
+        int afterDelete = driver.findElements(By.xpath("//*[contains(text(), 'Delete')]")).size();
+        Assertions.assertEquals(0,afterDelete);
     }
 
     @Test

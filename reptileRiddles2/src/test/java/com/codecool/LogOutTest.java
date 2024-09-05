@@ -34,7 +34,7 @@ class LogOutTest {
                 .directory("src/main/resources")
                 .load();
         driver.get("http://localhost:3000");
-        String username = dotenv.get("PLAYER_USERNAME");
+        String username = dotenv.get("PLAYER");
         String password = dotenv.get("PLAYER_PASSWORD");
         LogIn log = new LogIn();
         log.logIn(driver, username, password);

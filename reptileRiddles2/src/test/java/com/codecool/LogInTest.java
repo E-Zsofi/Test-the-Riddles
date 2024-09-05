@@ -36,8 +36,8 @@ class LogInTest {
         WebElement passwordInput = driver.findElement(By.id("password"));
         WebElement submitButton = driver.findElement(By.xpath("//button[contains(text(),\"LOGIN\")]"));
 
-        usernameInput.sendKeys("zsofi");
-        passwordInput.sendKeys("zsofi");
+        usernameInput.sendKeys("asd");
+        passwordInput.sendKeys("asd");
 
         submitButton.click();
         Assertions.assertTrue(driver.getCurrentUrl().contains("http://localhost:3000/"));

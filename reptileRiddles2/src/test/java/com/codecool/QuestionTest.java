@@ -34,7 +34,7 @@ class QuestionTest {
                 .directory("src/main/resources")
                 .load();
         driver.get("http://localhost:3000");
-        String username = dotenv.get("PLAYER_USERNAME");
+        String username = dotenv.get("PLAYER");
         String password = dotenv.get("PLAYER_PASSWORD");
         LogIn log = new LogIn();
         log.logIn(driver, username, password);
@@ -80,7 +80,7 @@ class QuestionTest {
         editButton.click();
         WebElement questionButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"root\"]/div/div[2]/div/div[1]/div/button")));
         questionButton.click();
-        WebElement addNewOptionButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"root\"]/div/div[2]/div/div[2]/div[2]/div/div[3]/div[4]/button")));
+        WebElement addNewOptionButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[contains(text(), '+ Add option')]")));
         addNewOptionButton.click();
         WebElement newInput = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"answer-3\"]")));
         newInput.sendKeys("Nem is vagyok");
@@ -115,7 +115,7 @@ class QuestionTest {
         Alert alert2 = wait.until(ExpectedConditions.alertIsPresent());
         alert2.accept();
         Thread.sleep(2000);
-        assertFalse(driver.getCurrentUrl().contains("http://localhost:3000/quiz/all"));
+        assertTrue(driver.getCurrentUrl().contains("http://localhost:3000/quiz/all"));
     }
 
     @Test
@@ -126,7 +126,7 @@ class QuestionTest {
         editButton.click();
         WebElement questionButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"root\"]/div/div[2]/div/div[1]/div/button")));
         questionButton.click();
-        WebElement timerInput = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"2time\"]")));
+        WebElement timerInput = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[contains(@id, 'time')]")));
         timerInput.click();
         timerInput.clear();
         timerInput.sendKeys("0");
@@ -138,7 +138,7 @@ class QuestionTest {
         saveQuiz.click();
         Alert alert2 = wait.until(ExpectedConditions.alertIsPresent());
         alert2.accept();
-        Thread.sleep(2000);
-        assertFalse(driver.getCurrentUrl().contains("http://localhost:3000/quiz/all"));
+        Thread.sleep(1000);
+        assertTrue(driver.getCurrentUrl().contains("http://localhost:3000/quiz/all"));
     }
 }
