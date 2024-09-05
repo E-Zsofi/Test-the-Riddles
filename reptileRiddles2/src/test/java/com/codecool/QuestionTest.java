@@ -1,6 +1,7 @@
 package com.codecool;
 
 import io.github.cdimascio.dotenv.Dotenv;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Alert;
@@ -28,6 +29,7 @@ class QuestionTest {
         options.setCapability("acceptInsecureCerts", true);
         options.addArguments("--disable-search-engine-choice-screen");
         driver = new ChromeDriver(options);
+        driver.manage().window().maximize();
         wait = new WebDriverWait(driver, Duration.ofSeconds(5));
 
         Dotenv dotenv = Dotenv.configure()
@@ -38,6 +40,11 @@ class QuestionTest {
         String password = dotenv.get("PLAYER_PASSWORD");
         LogIn log = new LogIn();
         log.logIn(driver, username, password);
+    }
+
+    @AfterEach
+    void tearDown() {
+        driver.quit();
     }
 
     @Test
@@ -78,7 +85,7 @@ class QuestionTest {
         myQuizzes.click();
         WebElement editButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"root\"]/div/div[2]/div/div[1]/div[1]/button[2]")));
         editButton.click();
-        WebElement questionButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"root\"]/div/div[2]/div/div[1]/div/button")));
+        WebElement questionButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[contains(.,'1.')]")));
         questionButton.click();
         WebElement addNewOptionButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[contains(text(), '+ Add option')]")));
         addNewOptionButton.click();
@@ -100,12 +107,10 @@ class QuestionTest {
         myQuizzes.click();
         WebElement editButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"root\"]/div/div[2]/div/div[1]/div[1]/button[2]")));
         editButton.click();
-        WebElement questionButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"root\"]/div/div[2]/div/div[1]/div/button")));
+        WebElement questionButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[contains(.,'1.')]")));
         questionButton.click();
         WebElement correctCheckbox1 = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"checkbox-2\"]")));
         correctCheckbox1.click();
-        WebElement correctCheckbox2 = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"checkbox-3\"]")));
-        correctCheckbox2.click();
         WebElement saveButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"root\"]/div/div[2]/div/div[2]/div[2]/div/div[4]/button[1]")));
         saveButton.click();
         Alert alert1 = wait.until(ExpectedConditions.alertIsPresent());

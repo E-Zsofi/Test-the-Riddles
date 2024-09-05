@@ -20,14 +20,18 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class RiddleTest {
-     WebDriver driver;
+    WebDriver driver;
     WebDriverWait wait;
+    WebDriver playerDriver;
+    Player player;
     
 
     @BeforeEach
     void setUp() {
 
         driver = new FirefoxDriver();
+        player = new Player();
+        driver.manage().window().maximize();
         driver.get("http://localhost:3000");
         wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         Dotenv dotenv = Dotenv.load();
@@ -44,14 +48,15 @@ class RiddleTest {
     @AfterEach
     void tearDown() {
         driver.quit();
+        player.driver.quit();
     }
     
     @Test
-    void testPlayerSuccessfullyJoin() {
+    void testPlayerSuccessfullyJoin() throws InterruptedException {
         Player player = new Player();
         player.PlayerLogIn();
         player.PlayerJoinAGame();
-        WebElement goodLuck = player.driver.findElement(By.xpath("//button[text()='Good luck!']"));
+        WebElement goodLuck = player.driver.findElement(By.cssSelector(".bg-pink-500"));
         Assertions.assertTrue(goodLuck.isDisplayed());
     }
 
@@ -67,17 +72,15 @@ class RiddleTest {
         WebElement games = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".antialiased:nth-child(1) .hidden")));
         games.click();
         WebElement firstDiv = driver.findElement(By.cssSelector(".grow > div:first-child"));
-        System.out.println(firstDiv.getText());
         List<WebElement> playersSpan = firstDiv.findElements(By.cssSelector("span"));
         String playersText = playersSpan.get(1).getText();
-        System.out.println(playersText);
         String expectedPlayersText = "1 players";
         Assertions.assertEquals(expectedPlayersText,playersText);
     }
     
     @Test
     void testPlayerSeeTheDetailsOf(){
-        Player player = new Player();
+        
         player.PlayerLogIn();
         player.PlayerJoinAGame();
         
@@ -115,7 +118,7 @@ class RiddleTest {
         saveQuestion.click();
         Alert alert = wait.until(ExpectedConditions.alertIsPresent());
         alert.accept();
-        Assertions.assertTrue(driver.getCurrentUrl().contains("http://localhost:3000/quizform/"));
+        Assertions.assertTrue(driver.getCurrentUrl().equals("http://localhost:3000/quizform/"));
     }
 
     @Test

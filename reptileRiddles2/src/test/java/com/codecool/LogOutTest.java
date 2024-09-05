@@ -1,6 +1,7 @@
 package com.codecool;
 
 import io.github.cdimascio.dotenv.Dotenv;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,6 +28,7 @@ class LogOutTest {
         options.setCapability("acceptInsecureCerts", true);
         options.addArguments("--disable-search-engine-choice-screen");
         driver = new ChromeDriver(options);
+        driver.manage().window().maximize();
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(2));
         wait = new WebDriverWait(driver, Duration.ofSeconds(5));
 
@@ -38,6 +40,11 @@ class LogOutTest {
         String password = dotenv.get("PLAYER_PASSWORD");
         LogIn log = new LogIn();
         log.logIn(driver, username, password);
+    }
+
+    @AfterEach
+    void tearDown() {
+        driver.quit();
     }
 
 

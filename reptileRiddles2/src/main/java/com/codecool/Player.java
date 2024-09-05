@@ -23,6 +23,7 @@ public class Player {
         options.setCapability("acceptInsecureCerts", true);
         options.addArguments("--disable-search-engine-choice-screen");
         driver = new ChromeDriver(options);
+        driver.manage().window().maximize();
         wait = new WebDriverWait(driver, Duration.ofSeconds(5));
         driver.get("http://localhost:3000");
     }
@@ -38,14 +39,13 @@ public class Player {
     }
     
     public void PlayerJoinAGame(){
-        WebElement games = driver.findElement(By.cssSelector(".antialiased:nth-child(1) .hidden"));
+        WebElement games = wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".antialiased:nth-child(1) .hidden")));
         games.click();
 
-        List<WebElement> joinButtons = driver.findElements(By.cssSelector(".antialiased:nth-child(1) .hidden"));
-            joinButtons.getFirst().click();
+        List<WebElement> joinButtons = driver.findElements(By.cssSelector(".bg-green-400"));
+        joinButtons.getFirst().click();
         
         WebElement joinConfirm = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(".pb-16")));
-
         joinConfirm.click();
     }
     

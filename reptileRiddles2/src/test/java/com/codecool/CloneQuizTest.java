@@ -1,6 +1,7 @@
 package com.codecool;
 
 import io.github.cdimascio.dotenv.Dotenv;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,6 +30,7 @@ class CloneQuizTest {
         options.setCapability("acceptInsecureCerts", true);
         options.addArguments("--disable-search-engine-choice-screen");
         driver = new ChromeDriver(options);
+        driver.manage().window().maximize();
         wait = new WebDriverWait(driver, Duration.ofSeconds(5));
 
         Dotenv dotenv = Dotenv.configure()
@@ -39,6 +41,11 @@ class CloneQuizTest {
         String password = dotenv.get("PLAYER_PASSWORD");
         LogIn log = new LogIn();
         log.logIn(driver, username, password);
+    }
+
+    @AfterEach
+    void tearDown() {
+        driver.quit();
     }
 
 //    @Test

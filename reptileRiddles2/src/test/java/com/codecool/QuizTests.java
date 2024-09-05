@@ -1,6 +1,7 @@
 package com.codecool;
 
 import io.github.cdimascio.dotenv.Dotenv;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -37,11 +38,17 @@ public class QuizTests {
         options.setCapability("acceptInsecureCerts", true);
         options.addArguments("--disable-search-engine-choice-screen");
         driver = new ChromeDriver(options);
+        driver.manage().window().maximize();
         driver.get("http://localhost:3000/");
         wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
         LogIn log = new LogIn();
         log.logIn(driver, username, password);
+    }
+
+    @AfterEach
+    void tearDown() {
+        driver.quit();
     }
 
 
@@ -53,7 +60,7 @@ public class QuizTests {
             WebElement addQuizzes = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[contains(text(), 'Add Quiz')]")));
             addQuizzes.click();
             WebElement quizTitle = wait.until(ExpectedConditions.elementToBeClickable(By.id("name")));
-            quizTitle.sendKeys(quizName);
+            quizTitle.sendKeys("quizName");
             WebElement addQuestionButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"root\"]/div/div[2]/div/div[1]/button")));
             addQuestionButton.click();
             WebElement questionTitleInput = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"-1question\"]")));
@@ -122,7 +129,7 @@ public class QuizTests {
         WebElement addQuizzes = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[contains(text(), 'Add Quiz')]")));
         addQuizzes.click();
         WebElement quizTitle = wait.until(ExpectedConditions.elementToBeClickable(By.id("name")));
-        quizTitle.sendKeys(quizName);
+        quizTitle.sendKeys("quizName");
         WebElement addQuestionButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"root\"]/div/div[2]/div/div[1]/button")));
         addQuestionButton.click();
         WebElement questionTitleInput = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"-1question\"]")));
