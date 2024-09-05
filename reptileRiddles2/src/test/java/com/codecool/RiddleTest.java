@@ -5,29 +5,28 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+
 import java.time.Duration;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class RiddleTest {
-     WebDriver driver;
-    
+    WebDriver driver;
+    WebDriverWait wait;
 
     @BeforeEach
     void setUp() {
 
         driver = new FirefoxDriver();
         driver.get("http://localhost:3000");
-
+        wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         Dotenv dotenv = Dotenv.load();
 
         String usernameGameMaster = dotenv.get("GAMEMASTER");
@@ -36,14 +35,11 @@ class RiddleTest {
         LogIn log = new LogIn();
         log.logIn(driver, usernameGameMaster,passwordGameMaster);
         
-        
     }
 
     @AfterEach
     void tearDown() {
-        //logout
-        
-        //driver.quit();
+        driver.quit();
     }
     
     @Test
@@ -63,7 +59,7 @@ class RiddleTest {
         player.driver.navigate().to("http://localhost:3000");
         player.PlayerJoinAGame();
         driver.navigate().to("http://localhost:3000");
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        
         WebElement games = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".antialiased:nth-child(1) .hidden")));
         games.click();
         WebElement firstDiv = driver.findElement(By.cssSelector(".grow > div:first-child"));
@@ -99,9 +95,63 @@ class RiddleTest {
         String scoreboardText = scoreboardDiv.getText();
         Assertions.assertFalse(scoreboardText.isEmpty());
     }
-    
+
     @Test
     void testSetToTimeLimitTo3600(){
-        
+        WebElement myQuizzes = driver.findElement(By.cssSelector(".antialiased:nth-child(3) .hidden"));
+        myQuizzes.click();
+        List<WebElement> editButtons = driver.findElements(By.cssSelector(".bg-yellow-400"));
+        editButtons.getFirst().click();
+        WebElement firstQuestion = driver.findElement(By.xpath("//button[contains(.,'1. ,nbklj')]"));
+        firstQuestion.click();
+        WebElement setTime = driver.findElement(By.id("2time"));
+        setTime.clear();
+        setTime.sendKeys("3600");
+        WebElement saveQuestion = driver.findElement(By.cssSelector(".mr-4"));
+        saveQuestion.click();
+        Alert alert = wait.until(ExpectedConditions.alertIsPresent());
+        alert.accept();
+        String expectedUrl = "http://localhost:3000/quizform/3";
+        String actualUrl = driver.getCurrentUrl();
+        Assertions.assertEquals(expectedUrl,actualUrl);
     }
+
+    @Test
+    void testChangeToTimeLimit(){
+        WebElement myQuizzes = driver.findElement(By.cssSelector(".antialiased:nth-child(3) .hidden"));
+        myQuizzes.click();
+        List<WebElement> editButtons = driver.findElements(By.cssSelector(".bg-yellow-400"));
+        editButtons.getFirst().click();
+        WebElement firstQuestion = driver.findElement(By.xpath("//button[contains(.,'1.')]"));
+        firstQuestion.click();
+        WebElement setTime = driver.findElement(By.xpath("//*[contains(@id, 'time')]"));
+        setTime.clear();
+        setTime.sendKeys("10");
+        WebElement saveQuestion = driver.findElement(By.cssSelector(".mr-4"));
+        saveQuestion.click();
+        Alert alert = wait.until(ExpectedConditions.alertIsPresent());
+        alert.accept();
+        driver.navigate().to("http://localhost:3000/quiz/my");
+        List<WebElement> refreshedEditButtons = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.cssSelector(".bg-yellow-400")));
+        refreshedEditButtons.getFirst().click();
+        WebElement refreshedFirstQuestion = driver.findElement(By.xpath("//button[contains(.,'1.')]"));
+        refreshedFirstQuestion.click();
+        WebElement refreshedSetTime = driver.findElement(By.xpath("//*[contains(@id, 'time')]"));
+        String expectedResult = "10";
+        System.out.println(refreshedSetTime.getAttribute("value"));
+        Assertions.assertEquals(expectedResult,refreshedSetTime.getAttribute("value"));         
+    }
+    
+    @Test
+    void NoPlayersNoGame(){
+        WebElement myQuizzes = driver.findElement(By.cssSelector(".antialiased:nth-child(3) .hidden"));
+        myQuizzes.click();
+        List<WebElement> playButtons = driver.findElements(By.cssSelector(".bg-green-400"));
+        playButtons.getFirst().click();
+        WebElement createLobby = driver.findElement(By.xpath("//button[text()='Create game lobby']"));
+        createLobby.click();
+        WebElement start = driver.findElement(By.xpath("//button[text()='Start']"));
+        Assertions.assertFalse(start.isEnabled());
+    }
+        
 }
