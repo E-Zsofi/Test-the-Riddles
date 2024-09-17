@@ -1,15 +1,14 @@
 package com.codecool;
 
+import com.codecool.pages.LoginPage;
+import io.github.cdimascio.dotenv.Dotenv;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
@@ -18,6 +17,9 @@ class LogInTest {
 
     private WebDriver driver;
     private WebDriverWait wait;
+    private LoginPage loginPage;
+    private String username;
+    private String password;
 
     @BeforeEach
     public void setUp() {
@@ -27,6 +29,12 @@ class LogInTest {
         driver = new ChromeDriver(options);
         driver.manage().window().maximize();
         wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+        loginPage = new LoginPage(driver, wait);
+        Dotenv dotenv = Dotenv.configure()
+                .directory("src/main/resources")
+                .load();
+        username = dotenv.get("PLAYER_USERNAME");
+        password = dotenv.get("PLAYER_PASSWORD");
     }
 
     @AfterEach
@@ -37,25 +45,23 @@ class LogInTest {
     @Test
     public void login() {
         driver.get("http://localhost:3000/login");
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
 
-        WebElement usernameInput = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("user-name")));
-        WebElement passwordInput = driver.findElement(By.id("password"));
-        WebElement submitButton = driver.findElement(By.xpath("//button[contains(text(),\"LOGIN\")]"));
+        loginPage.enterUsername(username);
+        loginPage.enterPassword(password);
+        loginPage.clickLogin();
 
-        usernameInput.sendKeys("asd");
-        passwordInput.sendKeys("asd");
-
-        submitButton.click();
         Assertions.assertTrue(driver.getCurrentUrl().contains("http://localhost:3000/"));
     }
 
     @Test
     public void logout() {
-        login();
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
-        WebElement logoutButton = wait.until(ExpectedConditions.visibilityOfElementLocated(By.linkText("Logout")));
-        logoutButton.click();
+        driver.get("http://localhost:3000/login");
+
+        loginPage.enterUsername(username);
+        loginPage.enterPassword(password);
+        loginPage.clickLogin();
+        loginPage.clickLogOut();
+
         Assertions.assertTrue(driver.getCurrentUrl().contains("http://localhost:3000/login"));
     }
 }
