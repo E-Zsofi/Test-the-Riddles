@@ -7,12 +7,15 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvFileSource;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
+import java.util.Objects;
 
 class RegisterPageTest {
     private WebDriver driver;
@@ -85,6 +88,16 @@ class RegisterPageTest {
         Assertions.assertFalse(driver.getCurrentUrl().contains("http://localhost:3000/login"));
     }
 
-
-
+    @ParameterizedTest
+    @CsvFileSource(resources = "/credentials.csv", numLinesToSkip = 1)
+    public void testCSV(String username, String email, String password, boolean expected){
+        driver.get("http://localhost:3000/register");
+        registerPage.enterUsername(username);
+        registerPage.enterEmail(email);
+        registerPage.enterPassword(password);
+        registerPage.clickRegister();
+        String expectedURL = "http://localhost:3000/login";
+        boolean actual = driver.getCurrentUrl().contains(expectedURL);
+        Assertions.assertEquals(expected, actual);
+    }
 }
