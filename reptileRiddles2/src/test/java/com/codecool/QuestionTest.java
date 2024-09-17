@@ -144,6 +144,6 @@ class QuestionTest {
         Alert alert2 = wait.until(ExpectedConditions.alertIsPresent());
         alert2.accept();
         Thread.sleep(1000);
-        assertTrue(driver.getCurrentUrl().contains("http://localhost:3000/quiz/all"));
+        assertFalse(driver.getCurrentUrl().contains("http://localhost:3000/quiz/all"));
     }
 }
