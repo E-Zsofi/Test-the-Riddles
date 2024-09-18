@@ -20,6 +20,7 @@ class LogInTest {
     private LoginPage loginPage;
     private String username;
     private String password;
+    private String BASE_URL;
 
     @BeforeEach
     public void setUp() {
@@ -35,6 +36,7 @@ class LogInTest {
                 .load();
         username = dotenv.get("PLAYER_USERNAME");
         password = dotenv.get("PLAYER_PASSWORD");
+        BASE_URL = dotenv.get("BASE_URL");
     }
 
     @AfterEach
@@ -44,24 +46,24 @@ class LogInTest {
 
     @Test
     public void login() {
-        driver.get("http://localhost:3000/login");
+        driver.get(BASE_URL+"/login");
 
         loginPage.enterUsername(username);
         loginPage.enterPassword(password);
         loginPage.clickLogin();
 
-        Assertions.assertTrue(driver.getCurrentUrl().contains("http://localhost:3000/"));
+        Assertions.assertTrue(driver.getCurrentUrl().contains(BASE_URL));
     }
 
     @Test
     public void logout() {
-        driver.get("http://localhost:3000/login");
+        driver.get(BASE_URL+"/login");
 
         loginPage.enterUsername(username);
         loginPage.enterPassword(password);
         loginPage.clickLogin();
         loginPage.clickLogOut();
 
-        Assertions.assertTrue(driver.getCurrentUrl().contains("http://localhost:3000/login"));
+        Assertions.assertTrue(driver.getCurrentUrl().contains(BASE_URL+"/login"));
     }
 }

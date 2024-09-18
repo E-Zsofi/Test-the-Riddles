@@ -1,6 +1,5 @@
 package com.codecool;
 
-import com.codecool.pages.LoginPage;
 import com.codecool.pages.RegisterPage;
 import io.github.cdimascio.dotenv.Dotenv;
 import org.junit.jupiter.api.AfterEach;
@@ -15,16 +14,15 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
-import java.util.Objects;
 
 class RegisterPageTest {
     private WebDriver driver;
     private WebDriverWait wait;
-    private LoginPage loginPage;
     private RegisterPage registerPage;
     private String username;
     private String email;
     private String password;
+    private String BASE_URL;
 
     @BeforeEach
     public void setUp() {
@@ -41,6 +39,7 @@ class RegisterPageTest {
         username = dotenv.get("PLAYER_USERNAME");
         email = dotenv.get("PLAYER_EMAIL");
         password = dotenv.get("PLAYER_PASSWORD");
+        BASE_URL = dotenv.get("BASE_URL");
     }
 
     @AfterEach
@@ -50,53 +49,53 @@ class RegisterPageTest {
 
     @Test
     public void register() {
-        driver.get("http://localhost:3000/register");
+        driver.get(BASE_URL+"/register");
         registerPage.enterUsername(username);
         registerPage.enterEmail(email);
         registerPage.enterPassword(password);
         registerPage.clickRegister();
-        Assertions.assertTrue(driver.getCurrentUrl().contains("http://localhost:3000/login"));
+        Assertions.assertTrue(driver.getCurrentUrl().contains(BASE_URL+"/login"));
     }
 
     @Test
     public void registerWithSameName() {
-        driver.get("http://localhost:3000/register");
+        driver.get(BASE_URL+"/register");
         registerPage.enterUsername(username);
         registerPage.enterEmail("newuser@newuser.com");
         registerPage.enterPassword("newuserPassword");
         registerPage.clickRegister();
-        Assertions.assertFalse(driver.getCurrentUrl().contains("http://localhost:3000/login"));
+        Assertions.assertFalse(driver.getCurrentUrl().contains(BASE_URL+"/login"));
     }
 
     @Test
     public void registerWithSameEmail() {
-        driver.get("http://localhost:3000/register");
+        driver.get(BASE_URL+"/register");
         registerPage.enterUsername("newUser");
         registerPage.enterEmail(email);
         registerPage.enterPassword("nUp");
         registerPage.clickRegister();
-        Assertions.assertFalse(driver.getCurrentUrl().contains("http://localhost:3000/login"));
+        Assertions.assertFalse(driver.getCurrentUrl().contains(BASE_URL+"/login"));
     }
 
     @Test
     public void registerWithSamePassword() {
-        driver.get("http://localhost:3000/register");
+        driver.get(BASE_URL+"/register");
         registerPage.enterUsername("newUser");
         registerPage.enterEmail("newuser@newuser.com");
         registerPage.enterPassword(password);
         registerPage.clickRegister();
-        Assertions.assertFalse(driver.getCurrentUrl().contains("http://localhost:3000/login"));
+        Assertions.assertFalse(driver.getCurrentUrl().contains(BASE_URL+"/login"));
     }
 
     @ParameterizedTest
     @CsvFileSource(resources = "/credentials.csv", numLinesToSkip = 1)
     public void testCSV(String username, String email, String password, boolean expected){
-        driver.get("http://localhost:3000/register");
+        driver.get(BASE_URL+"/register");
         registerPage.enterUsername(username);
         registerPage.enterEmail(email);
         registerPage.enterPassword(password);
         registerPage.clickRegister();
-        String expectedURL = "http://localhost:3000/login";
+        String expectedURL = BASE_URL+"/login";
         boolean actual = driver.getCurrentUrl().contains(expectedURL);
         Assertions.assertEquals(expected, actual);
     }
