@@ -13,7 +13,6 @@ public class GameListPage {
     @FindBy(xpath = "//*[@id=\"root\"]/div/div[2]/div/div[1]/div/button")
     private WebElement joinButton;
 
-
     public GameListPage(WebDriver driver, WebDriverWait wait) {
         this.wait = wait;
         PageFactory.initElements(driver, this);
