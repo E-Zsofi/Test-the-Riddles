@@ -7,13 +7,14 @@ import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 public class GameListPage {
     private WebDriver driver;
     private WebDriverWait wait;
 
-    private By joinButtonLocator= By.xpath("//*[@id=\"root\"]/div/div[2]/div/div[1]/div/button");
+    private By joinButtonLocator= By.cssSelector(".bg-green-400");
 
     public GameListPage(WebDriver driver, WebDriverWait wait) {
         this.wait = wait;
@@ -31,7 +32,10 @@ public class GameListPage {
     }
 
     public void joinGame() {
-        wait.until(ExpectedConditions.presenceOfElementLocated(joinButtonLocator)).click();
+        //wait.until(ExpectedConditions.presenceOfElementLocated(joinButtonLocator)).click();
+
+        List<WebElement> joinButtons = driver.findElements(joinButtonLocator);
+        joinButtons.getFirst().click();
     }
 
 }
