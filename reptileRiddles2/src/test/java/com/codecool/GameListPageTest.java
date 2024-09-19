@@ -1,9 +1,9 @@
 package com.codecool;
 
 import com.codecool.pages.GameListPage;
-import com.codecool.pages.LoginPage;
 import com.codecool.pages.NavbarComponent;
-import com.codecool.utilitiy.DBPopulateWithQuiz;
+import com.codecool.utilitiy.DBPopulateQuiz;
+import com.codecool.utilitiy.DBPopulateUser;
 import com.codecool.utilitiy.DatabaseMod;
 import io.github.cdimascio.dotenv.Dotenv;
 import org.junit.jupiter.api.AfterEach;
@@ -16,12 +16,15 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
 
 class GameListPageTest {
 
     private WebDriver driver;
     private WebDriverWait wait;
-    private DBPopulateWithQuiz dbPopulateWithQuiz;
+    private DBPopulateUser dbPopulateUser;
+    private DBPopulateQuiz dbPopulateQuiz;
     private NavbarComponent navbarComponent;
     private GameListPage gameListPage;
     private String username;
@@ -38,8 +41,7 @@ class GameListPageTest {
         driver = new ChromeDriver(options);
         driver.manage().window().maximize();
 
-
-        wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+        wait = new WebDriverWait(driver, Duration.ofSeconds(3));
         databaseMod = new DatabaseMod();
         databaseMod.PostgresTruncateMultipleTables();
         navbarComponent = new NavbarComponent(driver, wait);
@@ -54,8 +56,13 @@ class GameListPageTest {
         BASE_URL = dotenv.get("BASE_URL");
         driver.get(BASE_URL);
 
-        dbPopulateWithQuiz = new DBPopulateWithQuiz(driver, wait, username, email, password);
-        dbPopulateWithQuiz.populate();
+        dbPopulateUser = new DBPopulateUser(driver, wait, username, email, password);
+        dbPopulateUser.populateUser();
+        List<String> answers = new ArrayList<>();
+        answers.add("Blue");
+        answers.add("Green");
+        dbPopulateQuiz = new DBPopulateQuiz(driver, wait);
+        dbPopulateQuiz.populateQuiz("Color", "Test question, green?", answers);
     }
 
     @AfterEach

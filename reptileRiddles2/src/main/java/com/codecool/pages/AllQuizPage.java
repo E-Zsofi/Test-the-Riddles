@@ -15,7 +15,7 @@ public class AllQuizPage {
     private By quizListLocator = By.cssSelector(".flex.flex-row.border-2.m-2.p-1.rounded-md");
     private By copyButtonLocator = By.cssSelector(".bg-yellow-400");
     private By playButtonLocator = By.cssSelector(".bg-green-400");
-    private By addQuizButtonLocator = By.cssSelector(".bg-green-400.w-32");
+    private By addQuizButtonLocator = By.xpath("//*[@id=\"root\"]/div/div[2]/div/div[1]/button");
 
     public AllQuizPage(WebDriver driver, WebDriverWait wait) {
         this.driver = driver;
