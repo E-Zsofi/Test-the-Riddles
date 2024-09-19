@@ -39,8 +39,6 @@ public class GameMaster {
         start.click();
         WebElement results = driver.findElement(By.xpath("//button[text()='Results']"));
         results.click();
-        
-        
-        
+
     }
 }

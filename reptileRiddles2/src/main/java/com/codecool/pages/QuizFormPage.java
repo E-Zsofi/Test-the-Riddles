@@ -2,6 +2,7 @@ package com.codecool.pages;
 
 
 
+import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -41,6 +42,11 @@ public class QuizFormPage {
     public void clickDeleteQuiz() {
         WebElement deleteQuizButton = wait.until(ExpectedConditions.elementToBeClickable(deleteQuizButtonLocator));
         deleteQuizButton.click();
+    }
+
+    public void acceptAlert(){
+        Alert alert = wait.until(ExpectedConditions.alertIsPresent());
+        alert.accept();
     }
 }
 
