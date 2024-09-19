@@ -39,6 +39,7 @@ public class QuizGamePage {
 
     private final By joinButton =(By.xpath("//button[text()='Join']"));
     private final By buttonContainer = (By.cssSelector(".p-1"));
+    private final By goodLuck =(By.xpath("//button[text()='Good luck!']"));
     
     public void clickJoinButton() {wait.until(ExpectedConditions.visibilityOfElementLocated(joinButton)).click();}
 
@@ -56,7 +57,14 @@ public class QuizGamePage {
         }
     }
     
+    public boolean goodLuckIsVisible() {
+         WebElement goodLuckButton = wait.until(ExpectedConditions.visibilityOfElementLocated(goodLuck));
+         return goodLuckButton.isDisplayed();
+    }
+   
 }
+    
+
 
 /*
 Game logic:
