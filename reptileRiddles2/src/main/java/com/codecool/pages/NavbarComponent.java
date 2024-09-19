@@ -8,7 +8,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 public class NavbarComponent {
     private By games = By.xpath("//*[@id=\"root\"]/div/div[1]/nav/div/div[1]/ul/li[1]/a/span");
     private By quizzes = By.xpath("//*[@id=\"root\"]/div/div[1]/nav/div/div[1]/ul/li[2]/a/span");
-    private By myQuizzes = By.xpath("//*[@id=\"root\"]/div/div[1]/nav/div/div[1]/ul/li[3]/a/span");
+    private By myQuizzes = By.xpath("//span[text()='My Quizzes']");
     private By account = By.xpath("//*[@id=\"root\"]/div/div[1]/nav/div/div[1]/ul/li[4]/a/span");
     private By logout = By.xpath("//*[@id=\"root\"]/div/div[1]/nav/div/div[2]/a/button/span");
     private By login = By.xpath("//*[@id=\"root\"]/div/div[1]/nav/div/div[2]/a[1]/button/span");
