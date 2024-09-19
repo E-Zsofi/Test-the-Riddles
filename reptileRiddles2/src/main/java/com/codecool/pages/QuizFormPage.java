@@ -15,8 +15,10 @@ public class QuizFormPage {
 
     private By addQuestionButtonLocator = By.cssSelector(".bg-green-800.hover\\:bg-green-700");
     private By quizTitleInputLocator = By.id("name");
-    private By saveQuizButtonLocator = By.cssSelector(".bg-green-800.hover\\:bg-green-700.w-40");
-    private By deleteQuizButtonLocator = By.cssSelector(".bg-zinc-950.border-2");
+    private By editQuizButtonLocator = By.xpath("//button[contains(text(),\"Edit\")]");
+    private String alreadyExistingQuestionLocatorString = "//button[text()[3]='%s']";
+    private By saveQuizButtonLocator = By.xpath("//*[@id=\"root\"]/div/div[2]/div/div[2]/button[1]");
+    private By deleteQuizButtonLocator = By.xpath("//*[@id=\"root\"]/div/div[2]/div/div[2]/button[2]");
 
     public QuizFormPage(WebDriver driver, WebDriverWait wait) {
         this.driver = driver;
@@ -28,6 +30,12 @@ public class QuizFormPage {
         addQuestionButton.click();
     }
 
+    public void clickOnAnAlreadyExistingQuestion(String questionName) {
+        By alreadyExistingQuestionLocator = By.xpath(alreadyExistingQuestionLocatorString.formatted(questionName));
+        WebElement modifyQuestionButton = wait.until(ExpectedConditions.elementToBeClickable(alreadyExistingQuestionLocator));
+        modifyQuestionButton.click();
+    }
+
     public void setQuizTitle(String title) {
         WebElement quizTitleInput = wait.until(ExpectedConditions.visibilityOfElementLocated(quizTitleInputLocator));
         quizTitleInput.clear();
@@ -37,6 +45,11 @@ public class QuizFormPage {
     public void clickSaveQuiz() {
         WebElement saveQuizButton = wait.until(ExpectedConditions.elementToBeClickable(saveQuizButtonLocator));
         saveQuizButton.click();
+    }
+
+    public void clickEditQuiz(){
+        WebElement editQuizButton = wait.until(ExpectedConditions.elementToBeClickable(editQuizButtonLocator));
+        editQuizButton.click();
     }
 
     public void clickDeleteQuiz() {

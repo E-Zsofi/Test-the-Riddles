@@ -1,10 +1,7 @@
 package com.codecool.pages;
 
 
-import org.openqa.selenium.Alert;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -15,11 +12,10 @@ public class QuizFormComponent {
     private WebDriverWait wait;
 
     private final By questionInputLocator = By.id("-1question");
-    private final By timeLimitInputLocator = By.id("-1time");
+    private final By timeLimitInputLocator = By.xpath("//*[@id=\"161time\"]");
     private final By addOptionButtonLocator = By.xpath("//button[contains(text(), '+ Add option')]");
-    private final By saveButtonLocator = By.cssSelector(".bg-green-800.hover\\:bg-green-700");
-    private final By deleteButtonLocator = By.cssSelector(".bg-zinc-950.border-2");
-
+    private final By saveButtonLocator = By.xpath("//*[@id=\"root\"]/div/div[2]/div/div[2]/div[2]/div/div[4]/button[1]");
+    private final By deleteButtonLocator = By.xpath("//*[@id=\"root\"]/div/div[2]/div/div[2]/div[2]/div/div[4]/button[2]");
     public QuizFormComponent(WebDriver driver, WebDriverWait wait) {
         this.driver = driver;
         this.wait = wait;
@@ -32,15 +28,15 @@ public class QuizFormComponent {
     }
 
     public void setTimeLimit(int seconds) {
-        WebElement timeLimitInput = wait.until(ExpectedConditions.visibilityOfElementLocated(timeLimitInputLocator));
+        WebElement timeLimitInput = wait.until(ExpectedConditions.elementToBeClickable(timeLimitInputLocator));
         timeLimitInput.clear();
         timeLimitInput.sendKeys(String.valueOf(seconds));
+        ((JavascriptExecutor) driver).executeScript("arguments[0].dispatchEvent(new Event('change'));", timeLimitInput);
     }
 
     public void setAnswerOption(int index, String answer) {
         String dynamicAnswerInputId = "answer-" + index;
         By answerOptionLocator = By.id(dynamicAnswerInputId);
-
         WebElement answerOptionInput = wait.until(ExpectedConditions.visibilityOfElementLocated(answerOptionLocator));
         answerOptionInput.clear();
         answerOptionInput.sendKeys(answer);
@@ -49,7 +45,6 @@ public class QuizFormComponent {
     public void markAnswerAsCorrect(int index) {
         String dynamicCheckboxId = "checkbox-" + index;
         By correctAnswerCheckboxLocator = By.id(dynamicCheckboxId);
-
         WebElement correctAnswerCheckbox = wait.until(ExpectedConditions.elementToBeClickable(correctAnswerCheckboxLocator));
         if (!correctAnswerCheckbox.isSelected()) {
             correctAnswerCheckbox.click();

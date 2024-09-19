@@ -34,7 +34,7 @@ class GameListPageTest {
     private String BASE_URL;
 
     @BeforeEach
-    public void setUp() {
+    public void setUp() throws InterruptedException {
         ChromeOptions options = new ChromeOptions();
         options.setCapability("acceptInsecureCerts", true);
         options.addArguments("--disable-search-engine-choice-screen");
