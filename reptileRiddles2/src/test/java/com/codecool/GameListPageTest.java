@@ -1,6 +1,8 @@
 package com.codecool;
 
 import com.codecool.pages.LoginPage;
+import com.codecool.utilitiy.DBPopulateWithQuiz;
+import com.codecool.utilitiy.DatabaseMod;
 import io.github.cdimascio.dotenv.Dotenv;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,9 +18,11 @@ class GameListPageTest {
 
     private WebDriver driver;
     private WebDriverWait wait;
-    private LoginPage loginPage;
+    private DBPopulateWithQuiz dbPopulateWithQuiz;
     private String username;
     private String password;
+    private String email;
+    private DatabaseMod databaseMod;
     private String BASE_URL;
 
     @BeforeEach
@@ -29,21 +33,29 @@ class GameListPageTest {
         driver = new ChromeDriver(options);
         driver.manage().window().maximize();
         wait = new WebDriverWait(driver, Duration.ofSeconds(5));
-        loginPage = new LoginPage(driver, wait);
+        databaseMod.PostgresTruncateMultipleTables();
+
         Dotenv dotenv = Dotenv.configure()
                 .directory("src/main/resources")
                 .load();
         username = dotenv.get("PLAYER_USERNAME");
         password = dotenv.get("PLAYER_PASSWORD");
+        email = dotenv.get("PLAYER_EMAIL");
         BASE_URL = dotenv.get("BASE_URL");
+        dbPopulateWithQuiz = new DBPopulateWithQuiz(driver, wait, username, email, password);
+        dbPopulateWithQuiz.populate();
+
     }
 
     @AfterEach
     void tearDown() {
         driver.quit();
+        databaseMod.PostgresTruncateMultipleTables();
     }
 
     @Test
     void showGameList() {
+
+
     }
 }

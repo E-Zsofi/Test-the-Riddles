@@ -1,11 +1,14 @@
 package com.codecool.pages;
 
 
+import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.util.List;
 
 public class QuizFormComponent {
     private WebDriver driver;
@@ -66,6 +69,21 @@ public class QuizFormComponent {
     public void clickDelete() {
         WebElement deleteButton = wait.until(ExpectedConditions.elementToBeClickable(deleteButtonLocator));
         deleteButton.click();
+    }
+
+    public void addQuestionToQuiz(String questiontext, int timeLimit, List<String> answerOptions, int correctAnswer){
+        setQuestionText(questiontext);
+        setTimeLimit(timeLimit);
+        for (int i = 0; i < answerOptions.size(); i++) {
+            setAnswerOption(i+1, answerOptions.get(i));
+        }
+        markAnswerAsCorrect(correctAnswer);
+        clickSave();
+    }
+
+    public void acceptAlert(){
+        Alert alert = wait.until(ExpectedConditions.alertIsPresent());
+        alert.accept();
     }
 }
 
