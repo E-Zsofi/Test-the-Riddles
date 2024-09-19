@@ -15,8 +15,8 @@ public class QuizFormPage {
 
     private By addQuestionButtonLocator = By.cssSelector(".bg-green-800.hover\\:bg-green-700");
     private By quizTitleInputLocator = By.id("name");
-    private By saveQuizButtonLocator = By.cssSelector(".bg-green-800.hover\\:bg-green-700.w-40");
-    private By deleteQuizButtonLocator = By.cssSelector(".bg-zinc-950.border-2");
+    private By saveQuizButtonLocator = By.xpath("//*[@id=\"root\"]/div/div[2]/div/div[2]/button[1]");
+    private By deleteQuizButtonLocator = By.xpath("//*[@id=\"root\"]/div/div[2]/div/div[2]/button[2]");
 
     public QuizFormPage(WebDriver driver, WebDriverWait wait) {
         this.driver = driver;

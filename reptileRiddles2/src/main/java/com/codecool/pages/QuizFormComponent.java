@@ -17,8 +17,8 @@ public class QuizFormComponent {
     private final By questionInputLocator = By.id("-1question");
     private final By timeLimitInputLocator = By.id("-1time");
     private final By addOptionButtonLocator = By.xpath("//button[contains(text(), '+ Add option')]");
-    private final By saveButtonLocator = By.cssSelector(".bg-green-800.hover\\:bg-green-700");
-    private final By deleteButtonLocator = By.cssSelector(".bg-zinc-950.border-2");
+    private final By saveButtonLocator = By.xpath("//*[@id=\"root\"]/div/div[2]/div/div[2]/div[2]/div/div[4]/button[1]");
+    private final By deleteButtonLocator = By.xpath("//*[@id=\"root\"]/div/div[2]/div/div[2]/div[2]/div/div[4]/button[2]");
 
     public QuizFormComponent(WebDriver driver, WebDriverWait wait) {
         this.driver = driver;
@@ -71,14 +71,15 @@ public class QuizFormComponent {
         deleteButton.click();
     }
 
-    public void addQuestionToQuiz(String questiontext, int timeLimit, List<String> answerOptions, int correctAnswer){
-        setQuestionText(questiontext);
+    public void addQuestionToQuiz(String questionText, int timeLimit, List<String> answerOptions, int correctAnswer){
+        setQuestionText(questionText);
         setTimeLimit(timeLimit);
         for (int i = 0; i < answerOptions.size(); i++) {
             setAnswerOption(i+1, answerOptions.get(i));
         }
         markAnswerAsCorrect(correctAnswer);
         clickSave();
+        acceptAlert();
     }
 
     public void acceptAlert(){
