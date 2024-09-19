@@ -39,5 +39,12 @@ public class RegisterPage {
         wait.until(ExpectedConditions.elementToBeClickable(registerButton)).click();
         wait.until(ExpectedConditions.urlContains("http://localhost:3000/login"));
     }
+    
+    public void register(String username, String email,String password ) {
+        enterUsername(username);
+        enterPassword(password);
+        enterEmail(email);
+        clickRegister();
+    }
 
 }
