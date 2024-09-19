@@ -1,6 +1,7 @@
 package com.codecool;
 
 import com.codecool.pages.RegisterPage;
+import com.codecool.utilitiy.DatabaseMod;
 import io.github.cdimascio.dotenv.Dotenv;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -23,6 +24,7 @@ class RegisterPageTest {
     private String email;
     private String password;
     private String BASE_URL;
+    private DatabaseMod databaseMod;
 
     @BeforeEach
     public void setUp() {
@@ -33,6 +35,7 @@ class RegisterPageTest {
         driver.manage().window().maximize();
         wait = new WebDriverWait(driver, Duration.ofSeconds(5));
         registerPage = new RegisterPage(driver, wait);
+        databaseMod = new DatabaseMod();
         Dotenv dotenv = Dotenv.configure()
                 .directory("src/main/resources")
                 .load();
@@ -40,61 +43,49 @@ class RegisterPageTest {
         email = dotenv.get("PLAYER_EMAIL");
         password = dotenv.get("PLAYER_PASSWORD");
         BASE_URL = dotenv.get("BASE_URL");
+        driver.get(BASE_URL+"/register");
     }
 
     @AfterEach
     void tearDown() {
+        databaseMod.PostgresTruncateMultipleTables();
         driver.quit();
     }
 
     @Test
-    public void register() {
-        driver.get(BASE_URL+"/register");
-        registerPage.enterUsername(username);
-        registerPage.enterEmail(email);
-        registerPage.enterPassword(password);
-        registerPage.clickRegister();
+    public void registerTest() {
+        registerPage.register(username, email, password);
         Assertions.assertTrue(driver.getCurrentUrl().contains(BASE_URL+"/login"));
     }
 
     @Test
-    public void registerWithSameName() {
+    public void registerWithSameNameTest() {
+        registerPage.register(username, email, password);
         driver.get(BASE_URL+"/register");
-        registerPage.enterUsername(username);
-        registerPage.enterEmail("newuser@newuser.com");
-        registerPage.enterPassword("newuserPassword");
-        registerPage.clickRegister();
+        registerPage.register(username,"newuser@newuser.com","newuserPassword");
         Assertions.assertFalse(driver.getCurrentUrl().contains(BASE_URL+"/login"));
     }
 
     @Test
     public void registerWithSameEmail() {
+        registerPage.register(username, email, password);
         driver.get(BASE_URL+"/register");
-        registerPage.enterUsername("newUser");
-        registerPage.enterEmail(email);
-        registerPage.enterPassword("nUp");
-        registerPage.clickRegister();
+        registerPage.register("newUser",email,"nUp");
         Assertions.assertFalse(driver.getCurrentUrl().contains(BASE_URL+"/login"));
     }
 
     @Test
     public void registerWithSamePassword() {
+        registerPage.register(username, email, password);
         driver.get(BASE_URL+"/register");
-        registerPage.enterUsername("newUser");
-        registerPage.enterEmail("newuser@newuser.com");
-        registerPage.enterPassword(password);
-        registerPage.clickRegister();
+        registerPage.register("newUser","newuser@newuser.com",password );
         Assertions.assertFalse(driver.getCurrentUrl().contains(BASE_URL+"/login"));
     }
 
     @ParameterizedTest
     @CsvFileSource(resources = "/credentials.csv", numLinesToSkip = 1)
     public void testCSV(String username, String email, String password, boolean expected){
-        driver.get(BASE_URL+"/register");
-        registerPage.enterUsername(username);
-        registerPage.enterEmail(email);
-        registerPage.enterPassword(password);
-        registerPage.clickRegister();
+        registerPage.register(username, email, password);
         String expectedURL = BASE_URL+"/login";
         boolean actual = driver.getCurrentUrl().contains(expectedURL);
         Assertions.assertEquals(expected, actual);
