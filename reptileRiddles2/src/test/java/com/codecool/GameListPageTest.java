@@ -65,10 +65,9 @@ class GameListPageTest {
     }
 
     @Test
-    void showGameList() {
+    void showGameListWithoutQuestionsAdded() {
         navbarComponent.clickOnGames();
         boolean isThereGame = gameListPage.isThereAnyPlayableGames();
-        Assertions.assertTrue(isThereGame);
-
+        Assertions.assertFalse(isThereGame);
     }
 }
