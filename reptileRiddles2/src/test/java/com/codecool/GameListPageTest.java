@@ -50,7 +50,7 @@ class GameListPageTest {
         Dotenv dotenv = Dotenv.configure()
                 .directory("src/main/resources")
                 .load();
-        username = dotenv.get("PLAYER_USERNAME");
+        username = dotenv.get("PLAYER");
         password = dotenv.get("PLAYER_PASSWORD");
         email = dotenv.get("PLAYER_EMAIL");
         BASE_URL = dotenv.get("BASE_URL");
