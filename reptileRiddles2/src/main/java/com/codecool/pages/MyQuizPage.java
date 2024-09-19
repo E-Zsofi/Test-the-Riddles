@@ -56,6 +56,7 @@ public class MyQuizPage {
 
     public void clickPlayButton(int index) {
         List<WebElement> quizzes = getQuizzes();
+        System.out.println(quizzes.size());
         if (index >= 0 && index < quizzes.size()) {
             WebElement quiz = quizzes.get(index);
             WebElement playButton = quiz.findElement(playButtonLocator);
