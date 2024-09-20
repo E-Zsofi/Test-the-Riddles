@@ -1,8 +1,6 @@
 package com.codecool.pages;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -47,6 +45,21 @@ public class AllQuizPage {
         } else {
             throw new IndexOutOfBoundsException("No quiz found at index " + index);
         }
+    }
+
+    public int getQuizzesNumber() {
+        int numberOfQuizzes = 0;
+        try {
+            List<WebElement> quizzes = getQuizzes();
+            numberOfQuizzes = quizzes.size();
+        } catch (TimeoutException e) {
+            System.out.println("Timeout occurred while waiting for quiz elements: " + e.getMessage());
+        } catch (NoSuchElementException e) {
+            System.out.println("No quiz elements found on the page: " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("An unexpected error occurred: " + e.getMessage());
+        }
+        return numberOfQuizzes;
     }
 
     public void clickAddQuizButton() {

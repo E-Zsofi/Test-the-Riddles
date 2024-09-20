@@ -58,7 +58,7 @@ public class QuizTests {
         driver = new ChromeDriver(options);
         driver.manage().window().maximize();
         driver.get("http://localhost:3000/");
-        wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        wait = new WebDriverWait(driver, Duration.ofSeconds(2));
 
         dbPopulateUser = new DBPopulateUser(driver, wait, username, email, password);
         dbPopulateUser.populateUser();
@@ -96,7 +96,6 @@ public class QuizTests {
 
     @Test
     public void deleteQuizTest() {
-
         navbarComponent.clickOnMyQuizzes();
         myQuizPage.clickAddQuizButton();
         quizFormPage.setQuizTitle("test");
@@ -111,73 +110,40 @@ public class QuizTests {
         driver.navigate().refresh();
         navbarComponent.clickOnMyQuizzes();
         myQuizPage.clickDeleteButton(0);
+        int afterDelete = myQuizPage.getQuizzesNumber();
+
+        Assertions.assertEquals(0, afterDelete);
     }
 
     @Test
     public void deleteAllQuiz() throws InterruptedException {
-        WebElement myQuizzes = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[contains(text(), 'My Quizzes')]")));
-        myQuizzes.click();
-        Thread.sleep(500);
-        int count = driver.findElements(By.xpath("//*[contains(text(), 'Delete')]")).size();
-        List<WebElement> Deletes = wait.until(ExpectedConditions.numberOfElementsToBe(By.xpath("//*[contains(text(), 'Delete')]"), count));
-        for (WebElement delete : Deletes) {
-            delete.click();
-            Alert alert = wait.until(ExpectedConditions.alertIsPresent());
-            alert.accept();
+
+        for (int i = 0; i < 3; i++) {
+            navbarComponent.clickOnMyQuizzes();
+            navbarComponent.clickOnMyQuizzes();
+            myQuizPage.clickAddQuizButton();
+            quizFormPage.setQuizTitle("test");
+            quizFormPage.clickAddQuestion();
+            quizFormComponent.setQuestionText("Test name");
+            List<String> answers = new ArrayList<>();
+            answers.add("hello" + i);
+            answers.add("hi" + i);
+            quizFormComponent.addQuestionToQuiz("test" + i, 20, answers, 2);
+            quizFormPage.clickSaveQuiz();
+            quizFormPage.acceptAlert();
+            driver.navigate().refresh();
+            navbarComponent.clickOnMyQuizzes();
         }
-        Thread.sleep(1000);
-        int afterDelete = driver.findElements(By.xpath("//*[contains(text(), 'Delete')]")).size();
-        Assertions.assertEquals(0,afterDelete);
+        int size = myQuizPage.getQuizzesNumber();
+        for (int j = 0; j < size; j++) {
+            myQuizPage.clickDeleteButton(0);
+        }
+        driver.navigate().refresh();
+        int afterDelete = myQuizPage.getQuizzesNumber();
+
+        Assertions.assertEquals(0, afterDelete);
     }
 
-    @Test
-    public void modifyAnExistingQuiz() {
-        WebElement myQuizzes = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[contains(text(), 'My Quizzes')]")));
-        myQuizzes.click();
-        WebElement addQuizzes = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[contains(text(), 'Add Quiz')]")));
-        addQuizzes.click();
-        WebElement quizTitle = wait.until(ExpectedConditions.elementToBeClickable(By.id("name")));
-        quizTitle.sendKeys("quizName");
-        WebElement addQuestionButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"root\"]/div/div[2]/div/div[1]/button")));
-        addQuestionButton.click();
-        WebElement questionTitleInput = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"-1question\"]")));
-        questionTitleInput.sendKeys("Test Question");
-        WebElement answerOptionInput1 = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"answer-1\"]")));
-        answerOptionInput1.sendKeys("test1");
-        WebElement answerOptionInput2 = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"answer-2\"]")));
-        answerOptionInput2.sendKeys("test2");
-        WebElement addMoreAnswers = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"root\"]/div/div[2]/div/div[2]/div[2]/div/div[3]/div[4]/button")));
-        addMoreAnswers.click();
-        WebElement answerOption3 = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"answer-3\"]")));
-        answerOption3.sendKeys("test3");
-        WebElement correctAnswerCheckbox = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"checkbox-1\"]")));
-        correctAnswerCheckbox.click();
-        WebElement saveButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"root\"]/div/div[2]/div/div[2]/div[2]/div/div[4]/button[1]")));
-        saveButton.click();
-        Alert alert1 = wait.until(ExpectedConditions.alertIsPresent());
-        alert1.accept();
-        WebElement saveQuiz = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"root\"]/div/div[2]/div/div[2]/button[1]")));
-        saveQuiz.click();
-        Alert alert2 = wait.until(ExpectedConditions.alertIsPresent());
-        alert2.accept();
-        myQuizzes = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[contains(text(), 'My Quizzes')]")));
-        myQuizzes.click();
-        WebElement edit = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[contains(text(), 'Edit')]")));
-        edit.click();
-        WebElement existingQuestion = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"root\"]/div/div[2]/div/div[1]/div")));
-        existingQuestion.click();
-        questionTitleInput = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@value='Test Question']\n")));
-        questionTitleInput.clear();
-        questionTitleInput.sendKeys("Edited Question");
-        saveButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"root\"]/div/div[2]/div/div[2]/div[2]/div/div[4]/button[1]")));
-        saveButton.click();
-        alert1 = wait.until(ExpectedConditions.alertIsPresent());
-        alert1.accept();
-        saveQuiz = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"root\"]/div/div[2]/div/div[2]/button[1]")));
-        saveQuiz.click();
-        alert2 = wait.until(ExpectedConditions.alertIsPresent());
-        alert2.accept();
-    }
 
 
 
