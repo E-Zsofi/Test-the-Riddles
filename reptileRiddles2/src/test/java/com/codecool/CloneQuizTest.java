@@ -1,5 +1,9 @@
 package com.codecool;
 
+import com.codecool.pages.*;
+import com.codecool.utilitiy.DBPopulateQuiz;
+import com.codecool.utilitiy.DBPopulateUser;
+import com.codecool.utilitiy.DatabaseMod;
 import io.github.cdimascio.dotenv.Dotenv;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -15,6 +19,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -22,10 +27,23 @@ import static org.junit.jupiter.api.Assertions.*;
 class CloneQuizTest {
 
     private WebDriver driver;
+    private WebDriver gameMaster;
     private WebDriverWait wait;
+    private WebDriverWait masterWait;
+    private DatabaseMod databaseMod;
+    private DBPopulateQuiz dbPopulateQuiz;
+    private DBPopulateUser dbPopulateUser;
+    private DBPopulateUser dbPopulateGameMaster;
+    private NavbarComponent navbarComponent;
+    private MyQuizPage myQuizPage;
+    private QuizFormPage quizFormPage;
+    private QuizFormComponent quizFormComponent;
+    private AllQuizPage allQuizPage;
 
     @BeforeEach
     public void setUp() {
+        databaseMod = new DatabaseMod();
+        databaseMod.PostgresTruncateMultipleTables();
         ChromeOptions options = new ChromeOptions();
         options.setCapability("acceptInsecureCerts", true);
         options.addArguments("--disable-search-engine-choice-screen");
@@ -39,42 +57,48 @@ class CloneQuizTest {
         driver.get("http://localhost:3000");
         String username = dotenv.get("PLAYER");
         String password = dotenv.get("PLAYER_PASSWORD");
-        LogIn log = new LogIn();
-        log.logIn(driver, username, password);
+        String email = dotenv.get("PLAYER_EMAIL");
+        String gameMasterName = dotenv.get("GAMEMASTER");
+        String gameMasterPassword = dotenv.get("GAMEMASTER_PASSWORD");
+        String gamMasterEmail = dotenv.get("GAMEMASTER_EMAIL");
+        dbPopulateUser = new DBPopulateUser(driver, wait, username, email, password);
+        dbPopulateUser.populateUser();
+        dbPopulateQuiz = new DBPopulateQuiz(driver, wait);
+        List<String> answers = new ArrayList<>();
+        answers.add("hello");
+        answers.add("hi");
+        dbPopulateQuiz.populateQuiz("Test", "Test?", answers );
+
+        gameMaster = new ChromeDriver(options);
+        masterWait = new WebDriverWait(gameMaster, Duration.ofSeconds(3));
+        gameMaster.get("http://localhost:3000");
+        dbPopulateGameMaster = new DBPopulateUser(gameMaster, masterWait, gameMasterName, gamMasterEmail, gameMasterPassword);
+        dbPopulateGameMaster.populateUser();
+
+        navbarComponent = new NavbarComponent(gameMaster, masterWait);
+        myQuizPage = new MyQuizPage(gameMaster, masterWait);
+        quizFormComponent = new QuizFormComponent(gameMaster, masterWait);
+        quizFormPage = new QuizFormPage(gameMaster, masterWait);
+        allQuizPage = new AllQuizPage(gameMaster, masterWait);
+
     }
 
     @AfterEach
     void tearDown() {
         driver.quit();
+        gameMaster.quit();
+        databaseMod.PostgresTruncateMultipleTables();
     }
 
-//    @Test
-//    public void deleteAllQuiz() throws InterruptedException {
-//        WebElement myQuizzes = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[contains(text(), 'My Quizzes')]")));
-//        myQuizzes.click();
-//        Thread.sleep(500);
-//        int count = driver.findElements(By.xpath("//*[contains(text(), 'Delete')]")).size();
-//        List<WebElement> Deletes = wait.until(ExpectedConditions.numberOfElementsToBe(By.xpath("//*[contains(text(), 'Delete')]"), count));
-//        for (WebElement delete : Deletes) {
-//            delete.click();
-//            Alert alert = wait.until(ExpectedConditions.alertIsPresent());
-//            alert.accept();
-//        }
-//    }
 
     @Test
     public void cloneAnotherQuizMastersQuiz() throws InterruptedException {
-        WebElement allQuizzes = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"root\"]/div/div[1]/nav/div/div[1]/ul/li[2]/a/span")));
-        allQuizzes.click();
-        WebElement copyQuizButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"root\"]/div/div[2]/div/div[1]/div[1]/button[1]")));
-        copyQuizButton.click();
-        WebElement saveQuiz = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"root\"]/div/div[2]/div/div[2]/button[1]")));
-        saveQuiz.click();
-        Alert alert1 = wait.until(ExpectedConditions.alertIsPresent());
-        alert1.accept();
-        WebElement myQuizzes = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"root\"]/div/div[1]/nav/div/div[1]/ul/li[3]/a/span")));
-        myQuizzes.click();
-        WebElement deleteButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[contains(text(),'Delete')]")));
-       Assertions.assertTrue(deleteButton.isDisplayed());
+    navbarComponent.clickOnQuizzes();
+    int beforeAdd = allQuizPage.getQuizzesNumber();
+    allQuizPage.clickCopyButton(0);
+    quizFormPage.clickSaveQuiz();
+    quizFormPage.acceptAlert();
+    int afterAdd = allQuizPage.getQuizzesNumber();
+    Assertions.assertEquals(beforeAdd + 1, afterAdd);
     }
 }
