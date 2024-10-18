@@ -1,6 +1,7 @@
 # Quiz Game Testing Project
 
 This repository contains the testing framework for a Kahoot-like game application where users can create quizzes, start games, join, and play them. The system under test (SUT) has its own repository, which you can find [here](https://github.com/CodecoolGlobal/reptile-riddles-2-general-E-Zsofi).
+The application was created by fellow students, so the SUT still lacks a lot of important features and functionality, but the main functions were tested in this project.
 
 ## Tech Stack
 
@@ -21,15 +22,15 @@ This repository contains the testing framework for a Kahoot-like game applicatio
    git clone https://github.com/E-Zsofi/Test-the-Riddles
    cd reptile-riddles-2-general-E-Zsofi
 2. Install Maven dependencies:
-```
-mvn clean install
-```
+   ```
+   mvn clean install
+   ```
 3. Set up the WebDriver:
 Make sure you have ChromeDriver (or another Selenium-compatible driver) installed and available in your system's PATH.
 Run the tests:
-```
-mvn test
-```
+   ```
+   mvn test
+   ```
 This will execute all the Selenium tests using JUnit.
 
 Test Structure:
